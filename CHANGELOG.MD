@@ -7,6 +7,15 @@ et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Added
+- [TASK-11] `ObservationSource` ABC (secondary port) defining the contract for any source backend (`list_observations`, `health`)
+- [TASK-12] `InMemoryObservationSource`: durable in-memory adapter useful for tests, demos, and smoke checks (filtering + pagination in memory)
+- [TASK-12] `get_source(settings)` factory: returns the concrete source implementation according to `SourceKind`. BigQuery and MockLegacy raise `NotImplementedError` (will land in Modules 3-4)
+- [TASK-12] `SourceKind.IN_MEMORY` enum value (default temporarily set to IN_MEMORY; will revert to BIGQUERY in Module 3)
+
+### Changed
+- [TASK-13] `GET /observations` route uses `ObservationSource` via FastAPI `Depends`, decoupled from any concrete implementation. Mocked data removed from the route file (moved to `InMemoryObservationSource`)
+
 ## [0.1.0] - 2026-06-07
 
 ### Added
