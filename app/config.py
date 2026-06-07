@@ -17,8 +17,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class SourceKind(str, Enum):
     """Backends de données supportés."""
 
+    IN_MEMORY = "in_memory"
     BIGQUERY = "bigquery"
     MOCK_LEGACY = "mock_legacy"
+    
 
 class Settings(BaseSettings):
     """Paramètres d'environnement de l'application."""
@@ -49,6 +51,10 @@ class Settings(BaseSettings):
     log_level: str = Field(
         default="INFO",
         description="Niveau de logs (DEBUG, INFO, WARNING, ERROR, CRITICAL).",
+    )
+    source_kind: SourceKind = Field(
+        default=SourceKind.IN_MEMORY,
+        description="Backend actif (default IN_MEMORY tant que BigQuerySource n'est pas implémentée).",
     )
 
 @lru_cache
