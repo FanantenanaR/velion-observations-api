@@ -11,6 +11,7 @@ from app.domain.response import ApiResponse, Pagination, ResponseStatus
 router = APIRouter(prefix="/observations", tags=["observations"])
 
 
+    return get_source(settings)
 @router.get(
     "",
     response_model=ApiResponse[list[Observation]],
