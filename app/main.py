@@ -18,6 +18,16 @@ app = FastAPI(
 app.include_router(observations.router)
 
 
+@app.get("/healthz", response_model=ApiResponse[dict], tags=["health"])
+async def healthcheck() -> ApiResponse[dict]:
+    """Probe de santé basique de l'application."""
+    return ApiResponse[dict](
+        status=ResponseStatus.SUCCESS,
+        message="Service is healthy.",
+        data={"version": "0.1.0"},
+    )
+
+
 @app.get("/", include_in_schema=False)
 async def root() -> dict:
     """Racine — pointe vers les ressources utiles."""
