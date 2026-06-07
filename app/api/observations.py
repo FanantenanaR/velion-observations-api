@@ -3,15 +3,24 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 
+from app.config import Settings, get_settings
 from app.domain.models import Observation, ObservationFilters
 from app.domain.response import ApiResponse, Pagination, ResponseStatus
+from app.sources.base import ObservationSource
+from app.sources.factory import get_source
 
 router = APIRouter(prefix="/observations", tags=["observations"])
 
 
+def get_source_dependency(
+    settings: Settings = Depends(get_settings),
+) -> ObservationSource:
+    """FastAPI dependency : résout la source active depuis les settings."""
     return get_source(settings)
+
+
 @router.get(
     "",
     response_model=ApiResponse[list[Observation]],
@@ -22,12 +31,10 @@ async def list_observations(
     date_min: date | None = Query(default=None, description="Date minimum (incluse)."),
     date_max: date | None = Query(default=None, description="Date maximum (incluse)."),
     limit: int = Query(default=100, description="Nombre maximum d'observations par page."),
-    offset: int = Query(default=0, description="Décalage pour pagination (nombre d'éléments à sauter)."),
+    offset: int = Query(default=0, description="Décalage pour pagination."),
+    source: ObservationSource = Depends(get_source_dependency),
 ) -> ApiResponse[list[Observation]]:
-    """Retourne une page d'observations enveloppée dans ApiResponse.
-
-    Module 1 : data mockée pour valider le contrat exposé.
-    """
+    """Récupère une page d'observations depuis la source active."""
     filters = ObservationFilters(
         essai_id=essai_id,
         date_min=date_min,
@@ -35,8 +42,7 @@ async def list_observations(
         limit=limit,
         offset=offset,
     )
-    page_data, total_items = _mock_observations(filters)
-
+    page_data, total_items = await source.list_observations(filters)
     pagination = _build_pagination(filters, total_items)
 
     return ApiResponse[list[Observation]](
@@ -48,61 +54,8 @@ async def list_observations(
     )
 
 
-def _mock_observations(filters: ObservationFilters) -> tuple[list[Observation], int]:
-    """Retourne (page_data, total_items) — data mockée Module 1."""
-    samples: list[Observation] = [
-        Observation(
-            essai_id="IA",
-            parcelle_id="LINN",
-            date_observation=date(2022, 12, 31),
-            mesure_valeur=215.4,
-            mesure_type="CORN_YIELD",
-        ),
-        Observation(
-            essai_id="IA",
-            parcelle_id="POLK",
-            date_observation=date(2022, 12, 31),
-            mesure_valeur=185.2,
-            mesure_type="CORN_YIELD",
-        ),
-        Observation(
-            essai_id="IA",
-            parcelle_id="LINN",
-            date_observation=date(2022, 12, 31),
-            mesure_valeur=143000.0,
-            mesure_type="CORN_AREA_PLANTED",
-        ),
-        Observation(
-            essai_id="IA",
-            parcelle_id="CHEROKEE",
-            date_observation=date(2022, 12, 31),
-            mesure_valeur=26997000.0,
-            mesure_type="CORN_PRODUCTION",
-        ),
-        Observation(
-            essai_id="TX",
-            parcelle_id="TRAVIS",
-            date_observation=date(2022, 12, 31),
-            mesure_valeur=542.0,
-            mesure_type="COTTON_YIELD",
-        ),
-    ]
-
-    filtered = samples
-    if filters.essai_id:
-        filtered = [o for o in filtered if o.essai_id == filters.essai_id]
-    if filters.date_min:
-        filtered = [o for o in filtered if o.date_observation >= filters.date_min]
-    if filters.date_max:
-        filtered = [o for o in filtered if o.date_observation <= filters.date_max]
-
-    total = len(filtered)
-    page_data = filtered[filters.offset : filters.offset + filters.limit]
-    return page_data, total
-
-
 def _build_pagination(filters: ObservationFilters, total_items: int) -> Pagination:
-    """Construit l'objet Pagination depuis les filtres + total."""
+    """Construit la pagination depuis les filtres et le total non paginé."""
     limit = filters.limit if filters.limit > 0 else 1
     page = (filters.offset // limit) + 1
     total_pages = (total_items + limit - 1) // limit if total_items > 0 else 0
