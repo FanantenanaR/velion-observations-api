@@ -22,12 +22,14 @@ class ObservationSource(ABC):
     @abstractmethod
     async def list_observations(
         self, filters: ObservationFilters
-    ) -> tuple[list[Observation], int]:
+    ) -> tuple[list[Observation], int | None]:
         """Retourne (page_data, total_items_avant_pagination).
 
         Les filtres `date_min`/`date_max`/`essai_id` ainsi que la pagination
         `limit`/`offset` sont appliqués par la source (en SQL si BigQuery,
         en mémoire si InMemory, etc.).
+        Si filters.include_total est False, l'implémentation DOIT retourner
+        None pour total_items (et éviter d'effectuer le COUNT côté source).
         """
         ...
 

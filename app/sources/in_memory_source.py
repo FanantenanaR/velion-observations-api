@@ -55,7 +55,7 @@ class InMemoryObservationSource(ObservationSource):
 
     async def list_observations(
         self, filters: ObservationFilters
-    ) -> tuple[list[Observation], int]:
+    ) -> tuple[list[Observation], int | None]:
         filtered = _SAMPLES
         if filters.essai_id:
             filtered = [o for o in filtered if o.essai_id == filters.essai_id]
@@ -64,7 +64,7 @@ class InMemoryObservationSource(ObservationSource):
         if filters.date_max:
             filtered = [o for o in filtered if o.date_observation <= filters.date_max]
 
-        total = len(filtered)
+        total = len(filtered) if filters.include_total else None
         page = filtered[filters.offset : filters.offset + filters.limit]
         return page, total
 

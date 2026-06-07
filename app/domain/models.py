@@ -116,4 +116,15 @@ class ObservationFilters(BaseModel):
             description="Décalage pour pagination (nombre d'éléments à sauter).",
         ),
     ] = 0
+    include_total: Annotated[
+        bool,
+        Field(
+            default=True,
+            description=(
+                "Si False, l'API ne calcule pas le total_items (skip la query COUNT). "
+                "Utile pour réduire le coût/la latence quand seul le 'next/prev' est nécessaire "
+                "(scroll infini, pas d'affichage 'page X / Y')."
+            ),
+        ),
+    ] = True
 
