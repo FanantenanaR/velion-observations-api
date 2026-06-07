@@ -25,3 +25,7 @@ gcloud auth application-default login
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
+- Version sans hot-reload:
+```bash
+uvicorn app.main:app --port 8000
+```
