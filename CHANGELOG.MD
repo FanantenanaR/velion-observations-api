@@ -8,6 +8,16 @@ et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
 ## [Unreleased]
 
 ### Added
+- [TASK-28] `docs/` folder with technical documentation:
+  - `01-architecture.md`: hexagonal architecture overview, folder structure, sources class diagram (Mermaid)
+  - `02-api-contract.md`: endpoints, ApiResponse envelope, pagination + skip-count mode, error codes, exception handlers, observability
+  - `03-bigquery.md`: Gateway+Repository pattern, mapping, scan optimization, DDL rationale, cost guardrails
+  - `04-add-source.md`: step-by-step guide to plug a new backend with anti-patterns
+- [TASK-29] README rewritten as a half-page summary per Velion brief: quickstart, sources table, architecture choices, planned improvements, points of doubt
+
+## [0.5.0] - 2026-06-08
+
+### Added
 - [TASK-23] Cross-field date order validation in `/observations` route (`date_min <= date_max`)
 - [TASK-24] Domain exceptions `SourceUnavailableError` and `InvalidFilterError` (used by handlers; existing `LegacyParseError` now also handled)
 - [TASK-25] Centralized FastAPI exception handlers (`app/api/error_handlers.py`) — all errors are now returned as structured `ApiResponse[None]` with `status="error"`, proper HTTP code, and `ErrorDetail(code, message, details)`
