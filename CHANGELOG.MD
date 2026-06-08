@@ -8,6 +8,26 @@ et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
 ## [Unreleased]
 
 ### Added
+- [TASK-14] [TASK-15] `BigQueryClient` gateway + `BigQueryObservationSource` repository on `bigquery-public-data.usda_nass_agriculture.crops`. Gateway/Repository pattern (analogous to SQLAlchemy Session + Repository) — enables future BQ sources for other resources without code duplication
+- [TASK-15] Pure `row_to_observation` mapping function isolated in `bigquery/mapping.py`
+- [TASK-16] `sql/ddl_demo.sql`: hypothetical CREATE TABLE with partition + cluster rationale
+- [TASK-17] `sql/analytics_query.sql`: parameterized analytics query with scan-reduction rationale documented
+- [TASK-18] Manually verified the BigQuery → API → response pipeline end-to-end
+- New filter `include_total` (default true) for clients to opt-out of the COUNT query (cost/latency optimization)
+- `Pagination.has_next` field (always computable without COUNT)
+
+### Changed
+- `ObservationSource.list_observations` signature: returns `tuple[list[Observation], int | None]` (None when include_total=False)
+- `Pagination.total_items` and `total_pages` are now `int | None` to support skip-count mode
+- BigQuery count + fetch queries run in parallel via `asyncio.gather` (~50% latency reduction)
+- Factory composes `BigQueryClient + BigQueryObservationSource` instead of returning a monolithic source
+
+### Fixed
+- Duplicate `source_kind` declaration in `Settings` was silently overriding the BIGQUERY default with IN_MEMORY
+
+## [0.2.0] - 2026-06-08
+
+### Added
 - [TASK-11] `ObservationSource` ABC (secondary port) defining the contract for any source backend (`list_observations`, `health`)
 - [TASK-12] `InMemoryObservationSource`: durable in-memory adapter useful for tests, demos, and smoke checks (filtering + pagination in memory)
 - [TASK-12] `get_source(settings)` factory: returns the concrete source implementation according to `SourceKind`. BigQuery and MockLegacy raise `NotImplementedError` (will land in Modules 3-4)

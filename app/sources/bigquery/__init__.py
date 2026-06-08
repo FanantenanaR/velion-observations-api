@@ -1,0 +1,1 @@
+"""Sous-module BigQuery : client générique + sources spécialisées par entité."""

@@ -68,14 +68,20 @@ class Pagination(BaseModel):
         description="Nombre d'éléments par page.",
         examples=[100],
     )
-    total_items: int = Field(
-        description="Nombre total d'éléments correspondant aux filtres (avant pagination).",
+    total_items: int | None = Field(
+        default=None,
+        description="Nombre total d'éléments correspondant aux filtres (avant pagination). None si le client a opté pour skip COUNT.",
         examples=[1158],
     )
-    total_pages: int = Field(
-        description="Nombre total de pages.",
-        examples=[12],
+    total_pages: int | None = Field(
+        default=None,
+        description="Nombre total de pages. None si total_items est inconnu.",
     )
+    has_next: bool = Field(
+        default=False,
+        description="Indique s'il existe une page suivante (toujours calculable sans COUNT).",
+    )
+
 
 class ApiResponse(BaseModel, Generic[T]):
     """Envelope unique pour toutes les réponses de l'API.
