@@ -2,6 +2,12 @@
 
 API d'abstraction multi-sources pour observations terrain agronomiques. Le contrat expose au frontend est stable independamment du backend de donnees utilise (BigQuery, source legacy JSON, in-memory). Test technique Velion, livre le 8 juin 2026.
 
+## Note au relecteur
+
+Repo livre dans le cadre du test technique Velion (juin 2026). Trois sources sont operationnelles via adapter pattern ; le switch est pilote par la variable d'environnement `SOURCE_KIND`. Sans compte GCP, utiliser `SOURCE_KIND=mock_legacy` ou `in_memory` pour tester localement. Module tests unitaires non livre faute de temps, voir section "Avec plus de temps" ci-dessus.
+
+Pour une demo visio ou des questions techniques : contact via Mr P. ou Madame C. .
+
 ## Quickstart
 
 ```bash
