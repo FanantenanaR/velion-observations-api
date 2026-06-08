@@ -41,11 +41,11 @@ Switch de source : un seul changement `SOURCE_KIND=` dans `.env`. Aucune ligne d
 
 Architecture hexagonale (Ports & Adapters). Le domaine (`Observation`, `ObservationFilters`) est au centre, sans dependance technique. Les sources implementent un port (`ObservationSource` ABC). BigQuery suit en interne un pattern Gateway + Repository pour reutilisation entre ressources futures.
 
-Details complets : [docs/01-architecture.md](docs/01-architecture.md).
+Details complets : [docs/01-architecture.MD](docs/01-architecture.MD).
 
 ## Brancher une nouvelle source
 
-Guide complet : [docs/04-add-source.md](docs/04-add-source.md). Resume en 4 etapes :
+Guide complet : [docs/04-add-source.MD](docs/04-add-source.MD). Resume en 4 etapes :
 
 1. Creer le sous-package `app/sources/<nom>/`
 2. Implementer `ObservationSource` ABC (methodes `list_observations`, `health`)
