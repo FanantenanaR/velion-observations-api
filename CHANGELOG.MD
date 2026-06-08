@@ -8,6 +8,18 @@ et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
 ## [Unreleased]
 
 ### Added
+- [TASK-19] Mock legacy fixtures JSON (`data/mock_legacy_fixtures.json`) with deliberately divergent format: camelCase, Unix timestamps, value as string, dotted metrics, nested metadata, and 2 intentionally invalid records to validate skip-and-log behavior
+- [TASK-20] `app/sources/mock_legacy/` subpackage following the same Gateway + Repository + Mapping pattern as `bigquery/`:
+  - `loader.py`: eager JSON read at construction time
+  - `mapping.py`: pure `legacy_to_observation()` function (testable in isolation)
+  - `source.py`: `MockLegacyObservationSource` orchestrating load + normalize + filter + paginate
+- [TASK-20] `LegacyParseError` domain exception (in `app/exceptions.py`) — will be wired to API responses via exception handlers in Module 5
+- [TASK-21] Factory now resolves `SourceKind.MOCK_LEGACY` to `MockLegacyObservationSource(settings)`
+- [TASK-22] Manually verified contract stability: identical `ApiResponse` envelope across `in_memory`, `bigquery`, and `mock_legacy` sources (single env var switch)
+
+## [0.3.0] - 2026-06-08
+
+### Added
 - [TASK-14] [TASK-15] `BigQueryClient` gateway + `BigQueryObservationSource` repository on `bigquery-public-data.usda_nass_agriculture.crops`. Gateway/Repository pattern (analogous to SQLAlchemy Session + Repository) — enables future BQ sources for other resources without code duplication
 - [TASK-15] Pure `row_to_observation` mapping function isolated in `bigquery/mapping.py`
 - [TASK-16] `sql/ddl_demo.sql`: hypothetical CREATE TABLE with partition + cluster rationale
