@@ -6,6 +6,7 @@ from app.sources.base import ObservationSource
 from app.sources.bigquery.client import BigQueryClient
 from app.sources.bigquery.observation_source import BigQueryObservationSource
 from app.sources.in_memory_source import InMemoryObservationSource
+from app.sources.mock_legacy.source import MockLegacyObservationSource
 
 
 def get_source(settings: Settings) -> ObservationSource:
@@ -15,6 +16,7 @@ def get_source(settings: Settings) -> ObservationSource:
     puis on l'injecte dans BigQueryObservationSource (repository).
     Si demain on ajoute d'autres sources BQ (BigQueryEssaiSource,
     BigQueryParcelleSource, etc.), elles partageront le même client.
+
     """
     if settings.source_kind == SourceKind.IN_MEMORY:
         return InMemoryObservationSource()
@@ -22,6 +24,9 @@ def get_source(settings: Settings) -> ObservationSource:
     if settings.source_kind == SourceKind.BIGQUERY:
         client = BigQueryClient(settings)
         return BigQueryObservationSource(client)
+    
+    if settings.source_kind == SourceKind.MOCK_LEGACY:
+        return MockLegacyObservationSource(settings)
 
     # MockLegacy arrive dans le Module 4
     raise NotImplementedError(
