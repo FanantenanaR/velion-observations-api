@@ -8,6 +8,20 @@ et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
 ## [Unreleased]
 
 ### Added
+- [TASK-23] Cross-field date order validation in `/observations` route (`date_min <= date_max`)
+- [TASK-24] Domain exceptions `SourceUnavailableError` and `InvalidFilterError` (used by handlers; existing `LegacyParseError` now also handled)
+- [TASK-25] Centralized FastAPI exception handlers (`app/api/error_handlers.py`) — all errors are now returned as structured `ApiResponse[None]` with `status="error"`, proper HTTP code, and `ErrorDetail(code, message, details)`
+- [TASK-25] Handler for FastAPI `RequestValidationError` returning `INVALID_FILTER` with the offending fields
+- [TASK-26] Structured JSON logging via `structlog` (`app/logging_config.py`)
+- [TASK-26] `CorrelationIdMiddleware`: per-request UUID bound to log context, echoed back via `X-Correlation-Id` header
+- [TASK-27] `/healthz` now calls `source.health()` and surfaces backend connectivity; returns `status=error` if backend is down
+
+### Changed
+- All API errors now share the same envelope shape as successful responses (contract stability under error too)
+
+## [0.4.0] - 2026-06-08
+
+### Added
 - [TASK-19] Mock legacy fixtures JSON (`data/mock_legacy_fixtures.json`) with deliberately divergent format: camelCase, Unix timestamps, value as string, dotted metrics, nested metadata, and 2 intentionally invalid records to validate skip-and-log behavior
 - [TASK-20] `app/sources/mock_legacy/` subpackage following the same Gateway + Repository + Mapping pattern as `bigquery/`:
   - `loader.py`: eager JSON read at construction time
