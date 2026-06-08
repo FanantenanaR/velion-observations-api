@@ -1,0 +1,88 @@
+# Changelog
+
+Toutes les modifications notables de ce projet sont documentées dans ce fichier.
+
+Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
+et le versioning suit [Semantic Versioning](https://semver.org/lang/fr/).
+
+## [Unreleased]
+
+### Added
+- [TASK-28] `docs/` folder with technical documentation:
+  - `01-architecture.md`: hexagonal architecture overview, folder structure, sources class diagram (Mermaid)
+  - `02-api-contract.md`: endpoints, ApiResponse envelope, pagination + skip-count mode, error codes, exception handlers, observability
+  - `03-bigquery.md`: Gateway+Repository pattern, mapping, scan optimization, DDL rationale, cost guardrails
+  - `04-add-source.md`: step-by-step guide to plug a new backend with anti-patterns
+- [TASK-29] README rewritten as a half-page summary per Velion brief: quickstart, sources table, architecture choices, planned improvements, points of doubt
+
+## [0.5.0] - 2026-06-08
+
+### Added
+- [TASK-23] Cross-field date order validation in `/observations` route (`date_min <= date_max`)
+- [TASK-24] Domain exceptions `SourceUnavailableError` and `InvalidFilterError` (used by handlers; existing `LegacyParseError` now also handled)
+- [TASK-25] Centralized FastAPI exception handlers (`app/api/error_handlers.py`) — all errors are now returned as structured `ApiResponse[None]` with `status="error"`, proper HTTP code, and `ErrorDetail(code, message, details)`
+- [TASK-25] Handler for FastAPI `RequestValidationError` returning `INVALID_FILTER` with the offending fields
+- [TASK-26] Structured JSON logging via `structlog` (`app/logging_config.py`)
+- [TASK-26] `CorrelationIdMiddleware`: per-request UUID bound to log context, echoed back via `X-Correlation-Id` header
+- [TASK-27] `/healthz` now calls `source.health()` and surfaces backend connectivity; returns `status=error` if backend is down
+
+### Changed
+- All API errors now share the same envelope shape as successful responses (contract stability under error too)
+
+## [0.4.0] - 2026-06-08
+
+### Added
+- [TASK-19] Mock legacy fixtures JSON (`data/mock_legacy_fixtures.json`) with deliberately divergent format: camelCase, Unix timestamps, value as string, dotted metrics, nested metadata, and 2 intentionally invalid records to validate skip-and-log behavior
+- [TASK-20] `app/sources/mock_legacy/` subpackage following the same Gateway + Repository + Mapping pattern as `bigquery/`:
+  - `loader.py`: eager JSON read at construction time
+  - `mapping.py`: pure `legacy_to_observation()` function (testable in isolation)
+  - `source.py`: `MockLegacyObservationSource` orchestrating load + normalize + filter + paginate
+- [TASK-20] `LegacyParseError` domain exception (in `app/exceptions.py`) — will be wired to API responses via exception handlers in Module 5
+- [TASK-21] Factory now resolves `SourceKind.MOCK_LEGACY` to `MockLegacyObservationSource(settings)`
+- [TASK-22] Manually verified contract stability: identical `ApiResponse` envelope across `in_memory`, `bigquery`, and `mock_legacy` sources (single env var switch)
+
+## [0.3.0] - 2026-06-08
+
+### Added
+- [TASK-14] [TASK-15] `BigQueryClient` gateway + `BigQueryObservationSource` repository on `bigquery-public-data.usda_nass_agriculture.crops`. Gateway/Repository pattern (analogous to SQLAlchemy Session + Repository) — enables future BQ sources for other resources without code duplication
+- [TASK-15] Pure `row_to_observation` mapping function isolated in `bigquery/mapping.py`
+- [TASK-16] `sql/ddl_demo.sql`: hypothetical CREATE TABLE with partition + cluster rationale
+- [TASK-17] `sql/analytics_query.sql`: parameterized analytics query with scan-reduction rationale documented
+- [TASK-18] Manually verified the BigQuery → API → response pipeline end-to-end
+- New filter `include_total` (default true) for clients to opt-out of the COUNT query (cost/latency optimization)
+- `Pagination.has_next` field (always computable without COUNT)
+
+### Changed
+- `ObservationSource.list_observations` signature: returns `tuple[list[Observation], int | None]` (None when include_total=False)
+- `Pagination.total_items` and `total_pages` are now `int | None` to support skip-count mode
+- BigQuery count + fetch queries run in parallel via `asyncio.gather` (~50% latency reduction)
+- Factory composes `BigQueryClient + BigQueryObservationSource` instead of returning a monolithic source
+
+### Fixed
+- Duplicate `source_kind` declaration in `Settings` was silently overriding the BIGQUERY default with IN_MEMORY
+
+## [0.2.0] - 2026-06-08
+
+### Added
+- [TASK-11] `ObservationSource` ABC (secondary port) defining the contract for any source backend (`list_observations`, `health`)
+- [TASK-12] `InMemoryObservationSource`: durable in-memory adapter useful for tests, demos, and smoke checks (filtering + pagination in memory)
+- [TASK-12] `get_source(settings)` factory: returns the concrete source implementation according to `SourceKind`. BigQuery and MockLegacy raise `NotImplementedError` (will land in Modules 3-4)
+- [TASK-12] `SourceKind.IN_MEMORY` enum value (default temporarily set to IN_MEMORY; will revert to BIGQUERY in Module 3)
+
+### Changed
+- [TASK-13] `GET /observations` route uses `ObservationSource` via FastAPI `Depends`, decoupled from any concrete implementation. Mocked data removed from the route file (moved to `InMemoryObservationSource`)
+
+## [0.1.0] - 2026-06-07
+
+### Added
+- [TASK-5] Project skeleton (`pyproject.toml`, project structure, `.gitignore`)
+- [TASK-5] Initial documentation (`README.md`, `CHANGELOG.md`)
+- [TASK-6] Pydantic v2 domain models for the stable client contract (`Observation`, `ObservationFilters`)
+- [TASK-6] Normalized API response envelope (`ApiResponse[T]`, `Pagination`, `ErrorDetail`, `ErrorCode`, `ResponseStatus`)
+- [TASK-7] Application settings via `pydantic-settings` (env-only, no topology) and `SourceKind` enum
+- [TASK-8] `GET /observations` router with query params and paginated `ApiResponse[list[Observation]]`
+- [TASK-10] FastAPI entry point with `GET /healthz` wrapped in `ApiResponse[dict]` and `GET /` root metadata
+- [TASK-9] Manually verified endpoints via curl + Swagger UI
+
+[Unreleased]: https://github.com/FanantenanaR/velion-observations-api/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/FanantenanaR/velion-observations-api/releases/tag/v0.1.0
