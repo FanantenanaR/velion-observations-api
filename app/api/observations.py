@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, Query
 from app.config import Settings, get_settings
 from app.domain.models import Observation, ObservationFilters
 from app.domain.response import ApiResponse, Pagination, ResponseStatus
+from app.exceptions import InvalidFilterError
 from app.sources.base import ObservationSource
 from app.sources.factory import get_source
 
@@ -34,6 +35,13 @@ async def list_observations(
     ),
     source: ObservationSource = Depends(get_source_dependency),
 ) -> ApiResponse[list[Observation]]:
+    # Cross-field validation: dates must be ordered
+    if date_min and date_max and date_min > date_max:
+        raise InvalidFilterError(
+            f"date_min ({date_min.isoformat()}) must be earlier than or equal to "
+            f"date_max ({date_max.isoformat()})"
+        )
+
     filters = ObservationFilters(
         essai_id=essai_id,
         date_min=date_min,
