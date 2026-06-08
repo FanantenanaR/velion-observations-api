@@ -1,6 +1,6 @@
 # Contrat API
 
-Ce document decrit le contrat HTTP expose par l'API : endpoints, structure de reponse, gestion des erreurs, et observabilite. Le contrat est stable independamment de la source backend active (voir [01-architecture.md](./01-architecture.md)).
+Ce document decrit le contrat HTTP expose par l'API : endpoints, structure de reponse, gestion des erreurs, et observabilite. Le contrat est stable independamment de la source backend active (voir [01-architecture.MD](./01-architecture.MD)).
 
 ## Endpoints disponibles
 
@@ -95,7 +95,7 @@ Pagination offset-based : `limit` (taille de page) + `offset` (nombre d'elements
 
 ### Mode skip-count (`include_total=false`)
 
-Cas d'usage : scroll infini, frontend qui ne montre pas "page X / Y". L'API economise la query COUNT cote backend (~700 MB scannes sur USDA non partitionnee, voir [03-bigquery.md](./03-bigquery.md)).
+Cas d'usage : scroll infini, frontend qui ne montre pas "page X / Y". L'API economise la query COUNT cote backend (~700 MB scannes sur USDA non partitionnee, voir [03-bigquery.MD](./03-bigquery.MD)).
 
 ```bash
 curl "http://localhost:8000/observations?essai_id=IA&limit=2&include_total=false"
@@ -305,6 +305,6 @@ curl -i -H "X-Correlation-Id: my-trace-123" "http://localhost:8000/observations"
 
 ## Pour aller plus loin
 
-- Architecture globale et regle de dependance : [01-architecture.md](./01-architecture.md)
-- Implementation BigQuery (Gateway + Repository, optimisation scan) : [03-bigquery.md](./03-bigquery.md)
-- Ajouter une nouvelle source : [04-add-source.md](./04-add-source.md)
+- Architecture globale et regle de dependance : [01-architecture.MD](./01-architecture.MD)
+- Implementation BigQuery (Gateway + Repository, optimisation scan) : [03-bigquery.MD](./03-bigquery.MD)
+- Ajouter une nouvelle source : [04-add-source.MD](./04-add-source.MD)

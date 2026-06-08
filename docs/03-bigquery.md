@@ -2,7 +2,7 @@
 
 Ce document detaille l'implementation de l'adapter BigQuery : pattern Gateway + Repository, mapping vers le contrat domaine, et optimisation du scan.
 
-Pour le pattern hexagonal global, voir [01-architecture.md](./01-architecture.md). Pour le contrat de reponse, voir [02-api-contract.md](./02-api-contract.md).
+Pour le pattern hexagonal global, voir [01-architecture.MD](./01-architecture.MD). Pour le contrat de reponse, voir [02-api-contract.MD](./02-api-contract.MD).
 
 ## Pattern Gateway + Repository
 
@@ -64,7 +64,7 @@ class BigQueryObservationSource(ObservationSource):
         self._client = client
 ```
 
-Le nom de la table n'est pas dans la config (env vars) mais dans le code : c'est une decision metier, pas environnementale. Pour le detail de cette separation, voir [01-architecture.md](./01-architecture.md).
+Le nom de la table n'est pas dans la config (env vars) mais dans le code : c'est une decision metier, pas environnementale. Pour le detail de cette separation, voir [01-architecture.MD](./01-architecture.MD).
 
 ## Mapping ligne BQ -> Observation
 
@@ -153,7 +153,7 @@ Gain typique : temps total approxime au `max(count_time, fetch_time)` au lieu de
 
 ### Mode skip-count (`include_total=false`)
 
-Si le client API positionne `include_total=false`, la query COUNT est court-circuitee. Economie : ~700 MB scannes par requete sur la table publique, et la moitie de la latence. Cf. [02-api-contract.md](./02-api-contract.md) pour le detail cote client.
+Si le client API positionne `include_total=false`, la query COUNT est court-circuitee. Economie : ~700 MB scannes par requete sur la table publique, et la moitie de la latence. Cf. [02-api-contract.MD](./02-api-contract.MD) pour le detail cote client.
 
 ## DDL hypothetique
 
@@ -249,4 +249,4 @@ class BigQueryEssaiSource(EssaiSource):
         self._client = client  # MEME client partage
 ```
 
-Pour le guide complet d'ajout d'une nouvelle source, voir [04-add-source.md](./04-add-source.md).
+Pour le guide complet d'ajout d'une nouvelle source, voir [04-add-source.MD](./04-add-source.MD).

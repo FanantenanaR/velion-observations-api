@@ -2,7 +2,7 @@
 
 Ce document explique comment brancher un nouveau backend de donnees (autre API, autre database, fichier different, etc.) sans toucher au contrat expose au frontend.
 
-Prerequis : avoir lu [01-architecture.md](./01-architecture.md) (pattern hexagonal et regle de dependance) et [03-bigquery.md](./03-bigquery.md) (exemple de reference pour le pattern Gateway + Repository).
+Prerequis : avoir lu [01-architecture.MD](./01-architecture.MD) (pattern hexagonal et regle de dependance) et [03-bigquery.MD](./03-bigquery.MD) (exemple de reference pour le pattern Gateway + Repository).
 
 ## Vue d'ensemble du process
 
@@ -53,7 +53,7 @@ app/sources/<nom>/
   mapping.py       Fonction de mapping pure
 ```
 
-Exemple de reference : `app/sources/bigquery/` (voir [03-bigquery.md](./03-bigquery.md)).
+Exemple de reference : `app/sources/bigquery/` (voir [03-bigquery.MD](./03-bigquery.MD)).
 
 ## Etape 2 : implementer le port `ObservationSource`
 
@@ -158,7 +158,7 @@ uvicorn app.main:app --reload --port 8000
 curl "http://localhost:8000/observations?essai_id=IA&limit=5"
 ```
 
-La reponse doit avoir **exactement** la meme forme que pour les autres sources : `ApiResponse[list[Observation]]` avec `status`, `message`, `data`, `size`, `pagination`, `error`. C'est la preuve que le contrat est stable (voir [02-api-contract.md](./02-api-contract.md)).
+La reponse doit avoir **exactement** la meme forme que pour les autres sources : `ApiResponse[list[Observation]]` avec `status`, `message`, `data`, `size`, `pagination`, `error`. C'est la preuve que le contrat est stable (voir [02-api-contract.MD](./02-api-contract.MD)).
 
 ## Anti-patterns a eviter
 

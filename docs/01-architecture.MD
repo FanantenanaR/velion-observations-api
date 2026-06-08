@@ -2,7 +2,7 @@
 
 Ce document presente l'architecture globale du projet : pattern hexagonal, sources interchangeables, et regle de dependance.
 
-Pour le detail du contrat expose, voir [02-api-contract.md](./02-api-contract.md). Pour l'implementation BigQuery, voir [03-bigquery.md](./03-bigquery.md).
+Pour le detail du contrat expose, voir [02-api-contract.MD](./02-api-contract.MD). Pour l'implementation BigQuery, voir [03-bigquery.MD](./03-bigquery.MD).
 
 ## Vue d'ensemble : Hexagonal Architecture (Ports & Adapters)
 
@@ -154,6 +154,6 @@ Cette pilotabilite est la preuve que l'adapter pattern est en place : la route H
 
 ## Pour aller plus loin
 
-- Detail du contrat de reponse et des codes d'erreur : [02-api-contract.md](./02-api-contract.md)
-- Detail de l'adapter BigQuery (Gateway + Repository, optimisation scan) : [03-bigquery.md](./03-bigquery.md)
-- Guide pour brancher une nouvelle source : [04-add-source.md](./04-add-source.md)
+- Detail du contrat de reponse et des codes d'erreur : [02-api-contract.MD](./02-api-contract.MD)
+- Detail de l'adapter BigQuery (Gateway + Repository, optimisation scan) : [03-bigquery.MD](./03-bigquery.MD)
+- Guide pour brancher une nouvelle source : [04-add-source.MD](./04-add-source.MD)
