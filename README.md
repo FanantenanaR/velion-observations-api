@@ -4,7 +4,7 @@ API d'abstraction multi-sources pour observations terrain agronomiques. Le contr
 
 ## Note au relecteur
 
-Repo livre dans le cadre du test technique Velion (juin 2026). Trois sources sont operationnelles via adapter pattern ; le switch est pilote par la variable d'environnement `SOURCE_KIND`. Sans compte GCP, utiliser `SOURCE_KIND=mock_legacy` ou `in_memory` pour tester localement. Module tests unitaires non livre faute de temps, voir section "Avec plus de temps" ci-dessus.
+Repo livre dans le cadre du test technique. Trois sources sont operationnelles via adapter pattern ; le switch est pilote par la variable d'environnement `SOURCE_KIND`. Sans compte GCP, utiliser `SOURCE_KIND=mock_legacy` ou `in_memory` pour tester localement. Module tests unitaires non livre faute de temps, voir section "Avec plus de temps" ci-dessus.
 
 Pour une demo visio ou des questions techniques : contact via Mr P. ou Madame C. .
 
